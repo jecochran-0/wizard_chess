@@ -1,0 +1,196 @@
+---
+description: 
+globs: 
+---
+
+# Your rule content
+
+- You can @ files here
+- You can use markdown but dont have to
+
+Rule 1: React Component Structure
+Description: Ensure all React components follow a functional component structure with hooks, avoiding class-based components.
+
+File Pattern: src/**/*.jsx, src/**/*.tsx
+
+Rule: 
+plaintext
+
+When generating or editing React components, use functional components with hooks (e.g., useState, useEffect). Avoid class components. Export components as named exports (e.g., `export function ChessBoard`) rather than default exports for consistency. Include PropTypes for type checking where applicable.
+
+Example:
+jsx
+
+import PropTypes from 'prop-types';
+import { useState } from 'react';
+
+export function ChessPiece({ type, color }) {
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  return <div className={`${color}-${type}`}>{type}</div>;
+}
+
+ChessPiece.propTypes = {
+  type: PropTypes.string.isRequired,
+  color: PropTypes.oneOf(['white', 'black']).isRequired,
+};
+
+Rule 2: Chess.js Integration
+Description: Use Chess.js for all game logic and move validation to ensure standard chess rules are enforced.
+
+File Pattern: src/game/**/*.js
+
+Rule: 
+plaintext
+
+For all game logic (moves, captures, check/checkmate), import and utilize the Chess.js library. Do not implement custom chess rule logic. Initialize a Chess instance in a central game state file and pass it to components or services as needed.
+@file src/game/chessLogic.js
+
+Example:
+js
+
+import Chess from 'chess.js';
+
+export const chess = new Chess();
+
+export function makeMove(from, to) {
+  const move = chess.move({ from, to });
+  return move ? chess.fen() : null;
+}
+
+Rule 3: Animation Consistency with GSAP
+Description: Standardize animations using GSAP for smooth, reusable effects across pieces and actions.
+
+File Pattern: src/animations/**/*.js
+
+Rule: 
+plaintext
+
+Use GSAP for all piece movement, capture, and critical move animations. Define reusable animation functions in a dedicated animations module. Avoid inline CSS transitions or other animation libraries. Use timelines for sequenced effects (e.g., move then explode).
+@file src/animations/chessAnimations.js
+
+Example:
+js
+
+import { gsap } from 'gsap';
+
+export function animateCapture(target, onComplete) {
+  gsap.timeline()
+    .to(target, { scale: 1.2, duration: 0.2 })
+    .to(target, { opacity: 0, duration: 0.3, onComplete });
+}
+
+Rule 4: Socket.IO Multiplayer Events
+Description: Structure multiplayer logic with Socket.IO events for real-time synchronization.
+
+File Pattern: src/server/**/*.js, src/multiplayer/**/*.js
+
+Rule: 
+plaintext
+
+Use Socket.IO for all multiplayer interactions (e.g., move updates, game start). Define event names as constants in a shared config file. Emit events from the client and handle them on the server with validation using Chess.js.
+@file src/multiplayer/socketConfig.js
+
+Example:
+js
+
+// src/multiplayer/socketConfig.js
+export const EVENTS = {
+  MOVE: 'move',
+  GAME_START: 'gameStart',
+};
+
+// Client-side
+socket.emit(EVENTS.MOVE, { from: 'e2', to: 'e4' });
+
+// Server-side
+io.on('connection', (socket) => {
+  socket.on(EVENTS.MOVE, (move) => {
+    if (chess.move(move)) socket.broadcast.emit(EVENTS.MOVE, move);
+  });
+});
+
+Rule 5: Modularity with Multiple Files
+Description: Enforce modularity by splitting code into multiple, purpose-specific files rather than monolithic files.
+
+File Pattern: src/**/*.js, src/**/*.jsx
+
+Rule: 
+plaintext
+
+Split code into modular files based on responsibility (e.g., components, utilities, animations, game logic). Avoid single files exceeding 200 lines. Use a directory structure like src/components, src/game, src/animations, etc. Import dependencies explicitly rather than relying on global scope.
+Example: Separate ChessBoard, ChessPiece, and GameState into distinct files.
+
+Example Directory:
+
+src/
+  components/
+    ChessBoard.jsx
+    ChessPiece.jsx
+  game/
+    chessLogic.js
+    gameState.js
+  animations/
+    chessAnimations.js
+
+Rule 6: Firebase Integration
+Description: Use Firebase for user authentication and game persistence with consistent naming conventions.
+
+File Pattern: src/db/**/*.js
+
+Rule: 
+plaintext
+
+Integrate Firebase Firestore for user data (e.g., profiles, game history) and Authentication for login. Use camelCase for collection and document names (e.g., 'gameHistory', 'userProfiles'). Wrap Firebase calls in async utility functions.
+@file src/db/firebaseUtils.js
+
+Example:
+js
+
+import { db, auth } from 'firebase/firestore';
+
+export async function saveGame(userId, gameData) {
+  await db.collection('gameHistory').doc(userId).set(gameData);
+}
+
+Rule 7: Code Style and Formatting
+Description: Enforce a consistent code style across the project.
+
+File Pattern: src/**/*.{js,jsx}
+
+Rule: 
+plaintext
+
+Follow ES6+ syntax with arrow functions for callbacks. Use 2-space indentation, single quotes for strings, and semicolons. Name variables and functions descriptively (e.g., `movePiece` not `mp`). Adhere to Airbnb JavaScript style guide unless specified otherwise.
+
+Example:
+js
+
+const movePiece = (from, to) => {
+  const result = chess.move({ from, to });
+  return result ? 'success' : 'invalid';
+};
+
+Rule 8: Error Handling
+Description: Ensure robust error handling for AI, multiplayer, and game logic.
+
+File Pattern: src/**/*.js
+
+Rule: 
+plaintext
+
+Wrap critical operations (e.g., move validation, Socket.IO events, Firebase calls) in try-catch blocks. Log errors to the console with descriptive messages and return user-friendly feedback where applicable.
+
+Example:
+js
+
+export async function handleMove(from, to) {
+  try {
+    const move = chess.move({ from, to });
+    if (!move) throw new Error('Invalid move');
+    return chess.fen();
+  } catch (error) {
+    console.error(`Move failed: ${error.message}`);
+    return null;
+  }
+}
+
