@@ -1,0 +1,77 @@
+.move-history {
+  margin: 1.5rem auto;
+  max-width: min(80vw, 80vh);
+  padding: 1rem;
+  background-color: #32323270;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.move-history h3 {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+  text-align: center;
+  font-size: 1.2rem;
+}
+
+.moves-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  max-height: 150px;
+  overflow-y: auto;
+  padding: 0.5rem;
+  border-radius: 4px;
+  background-color: #22222270;
+}
+
+.move {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.move:hover {
+  background-color: #44444470;
+}
+
+.move.current {
+  background-color: #5c89b870;
+}
+
+.move-number {
+  margin-right: 0.25rem;
+  font-weight: bold;
+  color: #7b7b7b;
+}
+
+.move-text {
+  font-family: 'Courier New', monospace;
+}
+
+.move-text.white {
+  color: #f0f0f0;
+}
+
+.move-text.black {
+  color: #a0a0a0;
+}
+
+.no-moves {
+  color: #7b7b7b;
+  text-align: center;
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .move-history {
+    padding: 0.75rem;
+  }
+
+  .moves-container {
+    max-height: 120px;
+  }
+}

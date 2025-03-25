@@ -1,0 +1,65 @@
+.board {
+  display: flex;
+  flex-direction: column;
+  width: min(80vw, 80vh);
+  height: min(80vw, 80vh);
+  margin: 0 auto;
+  border: 4px solid #4a4a4a;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  background-color: #f0d9b5; /* Fallback color */
+  position: relative;
+  overflow: hidden;
+}
+
+.board-row {
+  display: flex;
+  flex: 1;
+  width: 100%;
+}
+
+/* Remove the ::before pseudo-element that was specific to grid layout */
+/* .board::before {
+  content: '';
+  padding-bottom: 100%;
+  grid-column: 1 / 1;
+  grid-row: 1 / 1;
+} */
+
+/* Board coordinates */
+.square[data-position^='a']::before,
+.square[data-position$='1']::after {
+  position: absolute;
+  font-size: 0.7rem;
+  color: rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* File labels (a-h) */
+.square[data-position$='1']::after {
+  content: attr(data-position);
+  bottom: 2px;
+  right: 2px;
+  opacity: 0.7;
+}
+
+/* Rank labels (1-8) */
+.square[data-position^='a']::before {
+  content: attr(data-position);
+  top: 2px;
+  left: 2px;
+  opacity: 0.7;
+}
+
+@media (max-width: 768px) {
+  .board {
+    width: 95vw;
+    height: 95vw;
+    border: 2px solid #4a4a4a;
+  }
+
+  .square[data-position^='a']::before,
+  .square[data-position$='1']::after {
+    font-size: 0.6rem;
+  }
+}
